@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ResQGrid AI — Emergency Command Center</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">RQ</div>
+        <div>
+          <h1>ResQGrid <span>AI</span></h1>
+          <p>Emergency Command Center</p>
+        </div>
+      </div>
+
+      <!-- <div class="live-badge">
+        <span class="pulse"></span>
+         DEMO MODE · URBAN FLOOD 
+      </div> -->
+
+      <nav>
+        <button class="nav-item active" data-section="dashboard"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" data-section="incidents"><span>⚠</span> Incidents</button>
+        <button class="nav-item" data-section="reports"><span>▤</span> Reports</button>
+        <button class="nav-item" data-section="resources"><span>🚑</span> Resources</button>
+        <button class="nav-item" data-section="hospitals"><span>✚</span> Hospitals</button>
+        <button class="nav-item" data-section="shelters"><span>⌂</span> Shelters</button>
+        <button class="nav-item" data-section="roads"><span>▱</span> Road Status</button>
+        <button class="nav-item" data-section="analytics"><span>◔</span> Analytics</button>
+        <button class="nav-item" data-section="simulation"><span>▶</span> Simulation</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="commander-card">
+          <div class="avatar">EC</div>
+          <div>
+            <strong>Emergency Commander</strong>
+            <small>Human approval required</small>
+          </div>
+          <span class="online-dot"></span>
+        </div>
+        <div class="ethics-note">
+          <b>AI Decision Support</b>
+          <span>AI recommends. Human commander approves.</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <header class="topbar">
+        <div>
+          <p class="eyebrow"></p>
+          <h2 id="page-title">Urban Flood Response</h2>
+        </div>
+
+        <div class="top-actions">
+          <div class="system-status">
+            <span class="pulse"></span>
+            SYSTEM OPERATIONAL
+          </div>
+          <button class="icon-btn" id="topNotificationBtn">🔔<span class="notif-count">3</span></button>
+          <button class="commander-btn">COMMANDER</button>
+        </div>
+      </header>
+
+      <section id="dashboard-section" class="page-section active command-dashboard">
+        <div class="command-topbar">
+          <div class="command-brandline"><div class="hamburger">☰</div><div class="dashboard-context">COMMAND CENTER · LIVE</div></div>
+          <div class="simulation-clock"><span>LIVE SIMULATION</span><b id="simClock">00:23:45</b></div>
+          <div class="weather-alert"><span class="weather-icon">☁</span><div><b>Heavy Rainfall</b><small>Red Alert</small></div></div>
+          <div class="command-actions">
+            <button class="top-demo-btn blue" id="whatIfBtn">What-If Simulation</button>
+            <button class="top-demo-btn green" id="replanBtn">Replan Now</button>
+            <button class="bell-btn" id="notificationBellBtn">🔔<span>3</span></button>
+            <button class="profile-btn"><span class="profile-avatar">👨‍✈️</span><span><b>Commander</b><small>Control Center</small></span><em>⌄</em></button>
+          </div>
+        </div>
+
+        <div class="status-strip">
+          <div class="status-copy"><span class="status-dot"></span><b>EMERGENCY COMMAND CENTER</b><span>AI decision support · Human approval required</span></div>
+          <div class="demo-controls compact-controls">
+            <button class="btn secondary" id="resetDemo">↻ Reset</button>
+            <button class="btn primary" id="startSimulation">▶ Start Flood Simulation</button>
+          </div>
+        </div>
+
+        <div class="kpi-grid command-kpis">
+          <div class="command-kpi"><span class="kpi-label">Total Reports</span><strong id="kpiReports">127</strong><small>Last 30 min</small></div>
+          <div class="command-kpi green-accent"><span class="kpi-label">Unique Incidents</span><strong id="kpiIncidents">31</strong><small>AI Correlated</small></div>
+          <div class="command-kpi red-accent"><span class="kpi-label">Critical</span><strong id="kpiCritical">6</strong><small>Incidents</small></div>
+          <div class="command-kpi orange-accent"><span class="kpi-label">High</span><strong id="kpiHigh">9</strong><small>Incidents</small></div>
+          <div class="command-kpi yellow-accent"><span class="kpi-label">Medium</span><strong id="kpiMedium">16</strong><small>Incidents</small></div>
+          <div class="command-kpi purple-accent"><span class="kpi-label">Available Resources</span><strong id="kpiResources">24</strong><small>Units</small></div>
+        </div>
+
+        <div class="command-main-grid">
+          <div class="panel command-map-panel">
+            <div class="panel-header command-panel-header">
+              <div><h3>Live GIS Situation Map</h3><p>Urban flood response · Pune / Ravet simulated zone</p></div>
+              <div class="map-legend command-legend">
+                <span><i class="legend critical"></i>Critical</span><span><i class="legend high"></i>High</span><span><i class="legend medium"></i>Medium</span><span><i class="legend resource"></i>Rescue Team</span><span><i class="legend hospital"></i>Hospital</span><span><i class="legend shelter"></i>Shelter</span>
+              </div>
+            </div>
+            <div class="map-wrap">
+              <div class="map-floating-tools"><button>▱</button><button>◎</button><button>+</button><button>−</button></div>
+              <div id="map"></div>
+              <div class="map-zone zone-ward7"></div><div class="map-zone zone-river"></div><div class="map-zone zone-center"></div><div class="map-zone zone-old"></div>
+            </div>
+          </div>
+
+          <div class="panel critical-panel">
+            <div class="panel-header command-panel-header"><div><h3>Critical Incidents</h3><p>Highest priority requiring action</p></div><button class="text-btn" data-section-link="incidents">View All</button></div>
+            <div id="criticalList" class="incident-list command-incident-list"></div>
+          </div>
+        </div>
+
+        <div class="command-bottom-grid">
+          <div class="panel recommendations-panel">
+            <div class="panel-header command-panel-header"><div><h3>AI Response Recommendations</h3><p>Top 5 actions · Awaiting commander approval</p></div><span class="ai-tag">AI OPTIMIZER</span></div>
+            <div class="rec-table-head"><span>#</span><span>Incident</span><span>Priority</span><span>Recommended</span><span>Distance</span><span>Action</span></div>
+            <div id="recommendations" class="command-recommendations"></div>
+          </div>
+
+          <div class="panel resource-status-panel">
+            <div class="panel-header command-panel-header"><div><h3>Resources Status</h3><p>Live operational capacity</p></div><button class="text-btn" data-section-link="resources">View All</button></div>
+            <div id="resourceStatus" class="resource-status-list"></div>
+          </div>
+
+          <div class="panel whatif-panel">
+            <div class="panel-header command-panel-header"><div><h3>What-If Simulation</h3><p>Test a disruption and re-plan instantly</p></div></div>
+            <div class="whatif-body">
+              <label>Scenario</label>
+              <select id="dashboardScenario"><option value="resource">Rescue Team 3 Unavailable</option><option value="road">Ward 7 Road Blocked</option><option value="flood">Flood Severity Increases</option><option value="hospital">Hospital B Capacity Reduced</option></select>
+              <div class="impact-box"><span>⚠</span><div><b>Impact</b><p>Previous plan may no longer be optimal. AI will re-plan the response.</p></div></div>
+              <button class="run-simulation-btn" id="dashboardRunScenario">Run Simulation</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="live-feed-bar">
+          <div class="feed-label"><span class="status-dot"></span><b>LIVE FEED</b></div>
+          <div id="liveFeed" class="feed command-feed"></div>
+          <button class="text-btn" data-section-link="reports">View All Logs</button>
+        </div>
+
+        <div class="panel flow-panel command-flow-panel">
+          <div class="panel-header command-panel-header"><div><h3>ResQGrid Intelligence Pipeline</h3><p>From fragmented reports to adaptive response</p></div></div>
+          <div class="pipeline"><div class="pipe-step"><b>01</b><strong>Reports</strong><span>Citizen + field inputs</span></div><div class="pipe-arrow">→</div><div class="pipe-step"><b>02</b><strong>AI Intelligence</strong><span>Extract + correlate</span></div><div class="pipe-arrow">→</div><div class="pipe-step"><b>03</b><strong>Prioritize</strong><span>Risk score 0–100</span></div><div class="pipe-arrow">→</div><div class="pipe-step"><b>04</b><strong>Optimize</strong><span>Match resources</span></div><div class="pipe-arrow">→</div><div class="pipe-step"><b>05</b><strong>Human Approval</strong><span>Commander decides</span></div><div class="pipe-arrow">→</div><div class="pipe-step"><b>06</b><strong>Re-plan</strong><span>Adapt to change</span></div></div>
+        </div>
+      </section>
+
+      <section id="incidents-section" class="page-section">
+        <div class="section-heading">
+          <div><h3>Incident Command</h3><p>Correlated emergency incidents and priority decisions.</p></div>
+          <button class="btn primary" id="newIncidentBtn">＋ Report Emergency</button>
+        </div>
+        <div class="filter-row">
+          <input id="incidentSearch" class="search" placeholder="Search incidents..." />
+          <select id="severityFilter"><option value="all">All priorities</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option></select>
+        </div>
+        <div id="incidentTable" class="table-wrap"></div>
+      </section>
+
+      <section id="reports-section" class="page-section">
+        <div class="section-heading">
+          <div><h3>Incoming Reports</h3><p>Unstructured reports received from simulated sources.</p></div>
+          <button class="btn primary" id="reportBtn">＋ Submit Report</button>
+        </div>
+        <div id="reportGrid" class="report-grid"></div>
+      </section>
+
+      <section id="resources-section" class="page-section">
+        <div class="section-heading">
+          <div><h3>Resource Management</h3><p>Available and assigned emergency resources.</p></div>
+          <button class="btn warning" id="disableResourceBtn">⚠ Simulate Resource Failure</button>
+        </div>
+        <div class="resource-summary" id="resourceSummary"></div>
+        <div id="resourceGrid" class="resource-grid"></div>
+      </section>
+
+      <section id="hospitals-section" class="page-section">
+        <div class="section-heading"><div><h3>Hospital Network</h3><p>Capacity and operational status.</p></div></div>
+        <div id="hospitalGrid" class="resource-grid"></div>
+      </section>
+
+      <section id="shelters-section" class="page-section">
+        <div class="section-heading"><div><h3>Shelter Network</h3><p>Displacement capacity and occupancy.</p></div></div>
+        <div id="shelterGrid" class="resource-grid"></div>
+      </section>
+
+      <section id="roads-section" class="page-section">
+        <div class="section-heading"><div><h3>Road Status</h3><p>Simulated accessibility constraints used by the optimizer.</p></div></div>
+        <div id="roadGrid" class="road-grid"></div>
+      </section>
+
+      <section id="analytics-section" class="page-section">
+        <div class="section-heading"><div><h3>Response Analytics</h3><p>Operational metrics for the current simulation.</p></div></div>
+        <div class="analytics-grid">
+          <div class="panel chart-panel"><h3>Reports Received</h3><div class="fake-chart" id="reportsChart"></div></div>
+          <div class="panel chart-panel"><h3>Incident Severity</h3><div class="bars" id="severityChart"></div></div>
+          <div class="panel chart-panel"><h3>Resource Utilization</h3><div class="bars" id="resourceChart"></div></div>
+        </div>
+      </section>
+
+      <section id="simulation-section" class="page-section">
+        <div class="section-heading">
+          <div><h3>What-If Simulation</h3><p>Test changing conditions before they happen.</p></div>
+          <button class="btn primary" id="runScenarioBtn">▶ Run Scenario</button>
+        </div>
+        <div class="scenario-grid">
+          <button class="scenario-card selected" data-scenario="resource">❌<strong>Rescue Team 3 unavailable</strong><span>Force resource reallocation.</span></button>
+          <button class="scenario-card" data-scenario="road">🚧<strong>Ward 7 road blocked</strong><span>Recalculate accessible routes.</span></button>
+          <button class="scenario-card" data-scenario="flood">🌊<strong>Flood severity increases</strong><span>Increase incident priorities.</span></button>
+          <button class="scenario-card" data-scenario="hospital">🏥<strong>Hospital B capacity reduced</strong><span>Redirect medical load.</span></button>
+          <button class="scenario-card" data-scenario="incident">🚨<strong>New critical incident</strong><span>Add a high-risk event.</span></button>
+        </div>
+        <div id="scenarioResult" class="scenario-result"></div>
+      </section>
+
+      <footer class="footer">
+        <span>ResQGrid AI · Decision Support Prototype</span>
+        <span>Simulated data · Human approval required</span>
+      </footer>
+    </main>
+  </div>
+
+  <div id="toastContainer"></div>
+
+  <div class="modal hidden" id="incidentModal">
+    <div class="modal-card">
+      <button class="modal-close" data-close="incidentModal">×</button>
+      <p class="eyebrow">NEW EMERGENCY REPORT</p>
+      <h3>Report an Incident</h3>
+      <label>Description</label>
+      <textarea id="incidentDescription" placeholder="Example: 20 people trapped inside a flooded building near Ward 7"></textarea>
+      <div class="two-col">
+        <div><label>People at risk</label><input id="peopleInput" type="number" value="10" min="0"></div>
+        <div><label>Severity</label><select id="severityInput"><option>Critical</option><option>High</option><option>Medium</option></select></div>
+      </div>
+      <div class="two-col">
+        <div><label>Latitude</label><input id="latInput" type="number" step="0.0001" value="18.518"></div>
+        <div><label>Longitude</label><input id="lngInput" type="number" step="0.0001" value="73.852"></div>
+      </div>
+      <button class="btn primary full" id="submitIncident">Analyze & Create Incident</button>
+      <div id="analysisState" class="analysis-state hidden"></div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="whatIfModal">
+    <div class="modal-card large">
+      <button class="modal-close" data-close="whatIfModal">×</button>
+      <p class="eyebrow">ADAPTIVE RESPONSE ENGINE</p>
+      <h3>What-If Simulation</h3>
+      <p class="muted">Select a disruption and let ResQGrid recalculate the response plan.</p>
+      <div class="scenario-grid compact">
+        <button class="scenario-card selected" data-modal-scenario="resource">❌<strong>RT-03 unavailable</strong><span>Recommended for demo</span></button>
+        <button class="scenario-card" data-modal-scenario="road">🚧<strong>Ward 7 road blocked</strong><span>Route constraint</span></button>
+        <button class="scenario-card" data-modal-scenario="flood">🌊<strong>Flood expands</strong><span>Risk increases</span></button>
+      </div>
+      <button class="btn danger full" id="runWhatIf">Run Re-planning Engine</button>
+      <div id="whatIfResult" class="scenario-result"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
